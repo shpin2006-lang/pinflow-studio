@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents,
-          generationConfig: { maxOutputTokens: body.max_tokens || 4096 }
+          generationConfig: { maxOutputTokens: 8192 }
         }),
       }
     );
