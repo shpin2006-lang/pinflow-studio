@@ -96,7 +96,7 @@ async function callAI(prompt, maxTokens = 4096) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-5",
+      model: "claude-sonnet-4-5-20251001",
       max_tokens: maxTokens,
       messages: [{ role: "user", content: prompt }],
     }),
@@ -112,7 +112,7 @@ async function callAIWithImage(prompt, imageBase64, imageMime, maxTokens = 2048)
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-5",
+      model: "claude-sonnet-4-5-20251001",
       max_tokens: maxTokens,
       messages: [{
         role: "user",
