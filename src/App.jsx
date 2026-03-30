@@ -96,7 +96,6 @@ async function callAI(prompt, maxTokens = 4096) {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-5-20251001",
       max_tokens: maxTokens,
       messages: [{ role: "user", content: prompt }],
     }),
@@ -106,20 +105,16 @@ async function callAI(prompt, maxTokens = 4096) {
   if (d.error) throw new Error(d.error.message || "API error");
   return (d.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
 }
-
 async function callAIWithImage(prompt, imageBase64, imageMime, maxTokens = 2048) {
   const r = await fetch("/.netlify/functions/claude", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-5-20251001",
       max_tokens: maxTokens,
       messages: [{
         role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: imageMime, data: imageBase64 } },
-          { type: "text", text: prompt },
-        ],
+        content: prompt,
+        image: { data: imageBase64, mimeType: imageMime }
       }],
     }),
   });
