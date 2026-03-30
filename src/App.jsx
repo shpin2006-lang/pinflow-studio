@@ -167,16 +167,16 @@ const STORAGE_KEY = "pinflow-studio-data";
 
 async function loadAppData() {
   try {
-    const result = await window.storage.get(STORAGE_KEY);
-    if (result && result.value) return JSON.parse(result.value);
+    const val = localStorage.getItem(STORAGE_KEY);
+    if (val) return JSON.parse(val);
   } catch (e) { console.error("Load failed:", e); }
   return null;
 }
 
 async function saveAppData(data) {
   try {
-    const result = await window.storage.set(STORAGE_KEY, JSON.stringify(data));
-    return !!result;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    return true;
   } catch (e) { console.error("Save failed:", e); return false; }
 }
 
