@@ -1,9 +1,7 @@
 exports.handler = async (event) => {
-  // Only allow POST requests
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
-
   try {
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -14,9 +12,7 @@ exports.handler = async (event) => {
       },
       body: event.body,
     });
-
     const data = await response.json();
-
     return {
       statusCode: response.status,
       headers: { "Content-Type": "application/json" },
