@@ -106,24 +106,28 @@ async function callAI(prompt, maxTokens = 4096) {
   return (d.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
 }
 async function callAIWithImage(prompt, imageBase64, imageMime, maxTokens = 2048) {
-  const r = await fetch("/.netlify/functions/claude", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      max_tokens: maxTokens,
-      messages: [{
-        role: "user",
-        content: prompt,
-        image: { data: imageBase64, mimeType: imageMime }
-      }],
-    }),
-  });
-  if (!r.ok) throw new Error(`API error ${r.status}`);
-  const d = await r.json();
-  if (d.error) throw new Error(d.error.message || "API error");
-  return (d.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+  try {
+    const r = await fetch("/.netlify/functions/claude", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        max_tokens: maxTokens,
+        messages: [{
+          role: "user",
+          content: prompt,
+          image: { data: imageBase64, mimeType: imageMime }
+        }],
+      }),
+    });
+    if (!r.ok) throw new Error(`API error ${r.status}`);
+    const d = await r.json();
+    if (d.error) throw new Error(d.error.message || "API error");
+    return (d.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+  } catch (e) {
+    console.error("Image analysis failed:", e);
+    throw new Error("Image analysis failed — please try a smaller image or different format");
+  }
 }
-
 function parseJSON(raw) {
   let c = raw.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
   let si = -1, isArr = false;
@@ -442,7 +446,11 @@ Return ONLY the JSON object.`,
         imgBase64, imgMime, 2048
       );
       setAnalysis(parseJSON(txt));
-    } catch (e) { setError(e.message); } finally { setAnalyzing(false); }
+    } catch (e) {
+  setError("Image analysis failed. Please try a smaller image (under 1MB) or a different format like JPG.");
+} finally {
+  setAnalyzing(false);
+}
   };
 
   const saveAsLayout = () => {

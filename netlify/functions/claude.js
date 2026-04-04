@@ -5,14 +5,19 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
     const msg = body.messages[0];
-    
+
     // Build Gemini contents — handle text only or text + image
     let contents;
-    if (msg.image) {
+    if (msg.image && msg.image.data) {
       contents = [{
         parts: [
           { text: msg.content },
-          { inline_data: { mime_type: msg.image.mimeType, data: msg.image.data } }
+          {
+            inline_data: {
+              mime_type: msg.image.mimeType || "image/jpeg",
+              data: msg.image.data
+            }
+          }
         ]
       }];
     } else {
@@ -26,30 +31,43 @@ exports.handler = async (event) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents,
-          generationConfig: { maxOutputTokens: 8192 }
+          generationConfig: {
+            maxOutputTokens: 8192
+          }
         }),
       }
     );
+
     const data = await response.json();
-    
+
+    // Handle Gemini errors gracefully
     if (data.error) {
       return {
         statusCode: 400,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ error: { message: data.error.message } }),
+        body: JSON.stringify({
+          error: { message: data.error.message || "Gemini API error" }
+        }),
       };
     }
-    
+
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: [{ type: "text", text }] }),
+      body: JSON.stringify({
+        content: [{ type: "text", text }]
+      }),
     };
+
   } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: { message: error.message } }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        error: { message: error.message }
+      }),
     };
   }
 };
