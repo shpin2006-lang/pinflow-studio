@@ -418,14 +418,39 @@ function PinAnalyzer({ color, onSaveStyle }) {
   const [error, setError] = useState("");
   const fileRef = useRef(null);
 
-  const onFile = (e) => {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    setImgMime(f.type); setAnalysis(null); setError("");
-    const reader = new FileReader();
-    reader.onload = (ev) => { setImgPreview(ev.target.result); setImgBase64(ev.target.result.split(",")[1]); };
-    reader.readAsDataURL(f);
+const onFile = (e) => {
+  const f = e.target.files?.[0];
+  if (!f) return;
+  setAnalysis(null); setError("");
+
+  // Compress image before sending
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      // Resize to max 800px width/height
+      const MAX = 800;
+      let w = img.width;
+      let h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, w, h);
+      // Compress to JPEG at 80% quality
+      const compressed = canvas.toDataURL("image/jpeg", 0.8);
+      setImgPreview(compressed);
+      setImgBase64(compressed.split(",")[1]);
+      setImgMime("image/jpeg");
+    };
+    img.src = ev.target.result;
   };
+  reader.readAsDataURL(f);
+};
 
   const analyze = async () => {
     if (!imgBase64) return;
