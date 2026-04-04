@@ -336,18 +336,44 @@ function ProductCard({ product, color, index }) {
             {p.category && <Badge>{p.category}</Badge>}
           </div>
           {p.why && <p style={{ fontSize: 13, color: T.textSoft, lineHeight: 1.55, marginBottom: 12 }}>{p.why}</p>}
-          {p.affiliate_link && (
-            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 14, padding: "8px 12px", background: T.bg, borderRadius: T.radiusXs }}>
-              <a href={p.affiliate_link} target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: 12, color, wordBreak: "break-all", flex: 1, textDecoration: "none", fontWeight: 600 }}>
-                🔗 Amazon Affiliate Link ↗
-              </a>
-              <Btn small variant="ghost" color={linkCopied ? T.success : color}
-                onClick={async () => { await copyText(p.affiliate_link); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 1800); }}>
-                {linkCopied ? "✓" : "Copy"}
-              </Btn>
-            </div>
-          )}
+         {p.affiliate_link && (
+  <div style={{ marginBottom: 14 }}>
+    {/* Big clickable Amazon button */}
+    <a href={p.affiliate_link} target="_blank" rel="noopener noreferrer"
+      style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        padding: "12px 16px", borderRadius: T.radiusSm, textDecoration: "none",
+        background: "linear-gradient(135deg, #FF9900, #FF6600)",
+        marginBottom: 8, transition: "opacity 0.2s ease",
+      }}
+      onMouseEnter={e => e.currentTarget.style.opacity = "0.9"}
+      onMouseLeave={e => e.currentTarget.style.opacity = "1"}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ fontSize: 20 }}>🛒</span>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 800, color: "#fff", fontFamily: T.font }}>
+            Find on Amazon
+          </div>
+          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.8)", fontFamily: T.font }}>
+            Search with your affiliate tag
+          </div>
+        </div>
+      </div>
+      <span style={{ color: "#fff", fontSize: 18 }}>→</span>
+    </a>
+
+    {/* Copy link row */}
+    <div style={{ display: "flex", gap: 8, alignItems: "center", padding: "8px 12px", background: T.bg, borderRadius: T.radiusXs }}>
+      <span style={{ fontSize: 11, color: T.textSoft, flex: 1, wordBreak: "break-all", fontFamily: T.font, fontWeight: 600 }}>
+        🔗 {p.affiliate_link.slice(0, 50)}...
+      </span>
+      <Btn small variant="ghost" color={linkCopied ? T.success : color}
+        onClick={async () => { await copyText(p.affiliate_link); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 1800); }}>
+        {linkCopied ? "✓ Copied" : "Copy Link"}
+      </Btn>
+    </div>
+  </div>
+)}
           <div style={{ marginBottom: 8 }}>
             <div style={{ fontSize: 10, fontWeight: 800, marginBottom: 6, color: T.textMuted, textTransform: "uppercase", letterSpacing: 1 }}>Product Photo Prompt</div>
             <ImageToolButtons prompt={imgPrompt} accentColor={color} />
