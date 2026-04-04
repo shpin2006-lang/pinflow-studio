@@ -332,9 +332,19 @@ function ProductCard({ product, color, index }) {
           {p.role && <Badge color={color} bg={color + "15"} style={{ marginBottom: 6 }}>{p.role}</Badge>}
           <div style={{ fontWeight: 800, fontSize: 15, fontFamily: T.font, marginBottom: 4, color: T.text }}>{p.name}</div>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 8 }}>
-            {p.price && <span style={{ fontSize: 16, fontWeight: 800, color }}>{p.price}</span>}
-            {p.category && <Badge>{p.category}</Badge>}
-          </div>
+  {p.price && <span style={{ fontSize: 16, fontWeight: 800, color }}>{p.price}</span>}
+  {p.color && (
+    <Badge color="#fff" bg={color} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      🎨 {p.color}
+    </Badge>
+  )}
+  {p.category && <Badge>{p.category}</Badge>}
+</div>
+{p.palette && (
+  <div style={{ marginBottom: 8, padding: "8px 12px", background: color + "10", borderRadius: T.radiusXs, fontSize: 12, fontWeight: 600, color }}>
+    🎨 Outfit Palette: {p.palette}
+  </div>
+)}
           {p.why && <p style={{ fontSize: 13, color: T.textSoft, lineHeight: 1.55, marginBottom: 12 }}>{p.why}</p>}
          {p.affiliate_link && (
   <div style={{ marginBottom: 14 }}>
@@ -816,9 +826,20 @@ function GenerateTab({ nicheId, nicheObj, tags, onSave, savedStyles, onAddStyle,
     setLoading(true); setError(""); setStep(0); setProducts(null); setPins(null);
     try {
       setStep(1);
-      const prodTxt = await callAI(
-        `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).\n\nTopic: "${topic}"\nTarget audience: ${gt}\nCurrency: ${co.curr} (${co.code})\n\nRead the topic carefully and recommend the right number of products:\n- If the topic says a number (e.g. "top 5") → give exactly that many\n- If it's a complete routine/outfit → give as many steps as needed\n- If it's a general product type → give 5 to 7 products\n\nRecommend specific real products available on Amazon ${co.name}.\n\nReturn a JSON array. Each object:\n{\n  "name": "Exact product name",\n  "role": "What this product is for",\n  "price": "${co.curr}29",\n  "category": "${nicheObj.label}",\n  "why": "One sentence why someone should buy this"\n}\n\nUse realistic prices in ${co.curr}.\nReturn ONLY the JSON array.`, 2048
-      );
+  const isFashion = nicheId === "fashion";
+const colorPrompt = isFashion ? `
+IMPORTANT COLOR COORDINATION RULES:
+- First decide a cohesive color palette for the entire outfit (e.g. "Camel, White and Black" or "Sage Green, Cream and Brown")
+- Every product MUST be in a color that fits this palette
+- Include the specific color in EVERY product name (e.g. "Camel Wool Blazer" not just "Blazer")
+- Make sure all items work together as a complete styled outfit
+- Add a "color" field to each product with the exact color
+- Add a "palette" field to the FIRST product only describing the full outfit color story
+` : "";
+
+const prodTxt = await callAI(
+  `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).\n\nTopic: "${topic}"\nTarget audience: ${gt}\nCurrency: ${co.curr} (${co.code})\n\n${colorPrompt}\nRead the topic carefully and recommend the right number of products:\n- If the topic says a number (e.g. "top 5") → give exactly that many\n- If it's a complete routine/outfit → give as many steps as needed\n- If it's a general product type → give 5 to 7 products\n\nRecommend specific real products available on Amazon ${co.name}.\n\nReturn a JSON array. Each object:\n{\n  "name": "Exact product name including color",\n  "role": "What this product is for",\n  "color": "Exact color of this item",\n  "price": "${co.curr}29",\n  "category": "${nicheObj.label}",\n  "why": "One sentence why this color and style works in this outfit"\n}\n\nUse realistic prices in ${co.curr}.\nReturn ONLY the JSON array.`, 2048
+);
       const rawProds = parseJSON(prodTxt);
       if (!Array.isArray(rawProds) || !rawProds.length) throw new Error("No products generated");
       setStep(2);
