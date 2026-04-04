@@ -92,7 +92,7 @@ const T = {
 };
 
 async function callAI(prompt, maxTokens = 4096) {
-  const r = await fetch("/.netlify/functions/claude", {
+  const r = await fetch("/api/claude", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -107,7 +107,7 @@ async function callAI(prompt, maxTokens = 4096) {
 }
 async function callAIWithImage(prompt, imageBase64, imageMime, maxTokens = 2048) {
   try {
-    const r = await fetch("/.netlify/functions/claude", {
+    const r = await fetch("/api/claude", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
