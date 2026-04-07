@@ -829,19 +829,29 @@ function GenerateTab({ nicheId, nicheObj, tags, onSave, savedStyles, onAddStyle,
   const isFashion = nicheId === "fashion";
 const colorPrompt = isFashion ? `
 IMPORTANT COLOR COORDINATION RULES:
-- First decide a cohesive color palette for the entire outfit (e.g. "Camel, White and Black" or "Sage Green, Cream and Brown")
+- First decide a cohesive color palette for the entire outfit (e.g. "Camel, White and Black")
 - Every product MUST be in a color that fits this palette
-- Include the specific color in EVERY product name (e.g. "Camel Wool Blazer" not just "Blazer")
+- Include the specific color in EVERY product name (e.g. "Camel Wool Blazer")
 - Make sure all items work together as a complete styled outfit
-- Add a "color" field to each product with the exact color
-- Add a "palette" field to the FIRST product only describing the full outfit color story
+- Add a "color" field to each product with the exact color (single word or short phrase only)
+- Add a "palette" field to the FIRST product only (short phrase like "Camel, White and Black")
+- Keep all field values SHORT to avoid JSON errors
 ` : "";
-
 const prodTxt = await callAI(
   `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).\n\nTopic: "${topic}"\nTarget audience: ${gt}\nCurrency: ${co.curr} (${co.code})\n\n${colorPrompt}\nRead the topic carefully and recommend the right number of products:\n- If the topic says a number (e.g. "top 5") → give exactly that many\n- If it's a complete routine/outfit → give as many steps as needed\n- If it's a general product type → give 5 to 7 products\n\nRecommend specific real products available on Amazon ${co.name}.\n\nReturn a JSON array. Each object:\n{\n  "name": "Exact product name including color",\n  "role": "What this product is for",\n  "color": "Exact color of this item",\n  "price": "${co.curr}29",\n  "category": "${nicheObj.label}",\n  "why": "One sentence why this color and style works in this outfit"\n}\n\nUse realistic prices in ${co.curr}.\nReturn ONLY the JSON array.`, 2048
 );
-      const rawProds = parseJSON(prodTxt);
-      if (!Array.isArray(rawProds) || !rawProds.length) throw new Error("No products generated");
+      let rawProds;
+try {
+  rawProds = parseJSON(prodTxt);
+} catch (e) {
+  // Try to clean the response and parse again
+  const cleaned = prodTxt
+    .replace(/[\u0000-\u001F\u007F-\u009F]/g, "") // remove control characters
+    .replace(/,\s*}/g, "}") // remove trailing commas in objects
+    .replace(/,\s*]/g, "]"); // remove trailing commas in arrays
+  rawProds = parseJSON(cleaned);
+}
+if (!Array.isArray(rawProds) || !rawProds.length) throw new Error("No products generated");
       setStep(2);
       const prods = rawProds.map((p, i) => {
         const searchTerms = (p.name || "").replace(/[^a-zA-Z0-9 ]/g, "").trim().split(/\s+/).join("+");
