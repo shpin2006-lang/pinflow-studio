@@ -574,7 +574,39 @@ function PinImageGenerator({ products, pins, nicheId, color, savedStyles, onDelS
     { id: "toplist", label: "Top Picks Ranking", icon: "🏆", desc: "Magazine-style ranked product list", prompt: `Create a Pinterest "Top Picks" ranking pin (1000×1500px, 2:3 vertical ratio).\n\nHEADLINE: "${pinTitle}"\n\nRANKED PRODUCTS:\n${pNames}\n\nSTYLE: Editorial magazine ranking layout. Bold headline at top. Each product gets a rank badge. Accent color ${color}. Modern typography mixing serif headline with sans-serif body.` },
     { id: "hero", label: "Hero Spotlight", icon: "★", desc: "One hero product with supporting items", prompt: `Create a Pinterest hero product spotlight pin (1000×1500px, 2:3 vertical ratio).\n\nTITLE: "${pinTitle}"\n\nHERO PRODUCT (large, center): ${hero}\n\nSUPPORTING PRODUCTS:\n${pNamesShort}\n\nSTYLE: Dramatic product photography. Hero product large and center with spotlight effect. Supporting products smaller below. Dark gradient background. Bold title text. Accent color ${color}.` },
     { id: "aesthetic", label: "Aesthetic Mood Board", icon: "🎭", desc: "Collage of textures, colors, and product vibes", prompt: `Create a Pinterest aesthetic mood board pin (1000×1500px, 2:3 vertical ratio).\n\nTHEME: "${pinTitle}"\nSUBTITLE: "${pinDesc}"\n\nINSPIRED BY: ${pNamesShort}\n\nSTYLE: Mood board collage with 6-9 tiles in an asymmetric grid. Mix product photos with textures, color swatches matching ${color}, and lifestyle shots. Cohesive ${niche.label.toLowerCase()} aesthetic. Muted warm palette.` },
-  ];
+  { 
+  id: "outfitflatlay", 
+  label: "Outfit Flat Lay", 
+  icon: "👕", 
+  desc: "Clean white background flat lay like a styled outfit post",
+  prompt: `Create a Pinterest outfit flat lay pin (1000×1500px, 2:3 vertical ratio).
+
+TITLE: "${pinTitle}"
+
+OUTFIT ITEMS TO ARRANGE:
+${pNames}
+
+STYLE REQUIREMENTS — Follow EXACTLY:
+- Pure white background (#FFFFFF) — no shadows, no texture
+- Items laid completely flat and spread naturally across the frame
+- Clothing items (shirts, pants, jackets) laid flat and slightly unfolded as if someone just placed them
+- Accessories (bags, watches, shoes) placed naturally around the clothing
+- Shoes placed at bottom, slightly overlapping
+- Bag/backpack placed in top right corner
+- Watch or small accessories placed on right side middle
+- Any drink or small prop placed bottom left or center
+- Items should NOT overlap each other except slightly at edges
+- Spacing between items should feel natural and breathable
+- NO text overlay on the image
+- NO props like flowers or candles
+- Photography style: overhead flat lay, perfect top-down angle
+- Lighting: bright, even, soft studio lighting — no harsh shadows
+- Color palette: let the natural product colors show
+- Overall feel: clean, minimal, Pinterest-worthy menswear/fashion flat lay
+
+Make it look EXACTLY like a professional fashion flat lay photo on pure white background.`
+},
+];
 
   const customLayouts = (savedStyles || []).map((s, i) => ({
     id: `custom-${i}`, label: s.label || `Custom Style ${i + 1}`, icon: "📷", desc: s.style_description ? s.style_description.slice(0, 60) + "..." : "Recreated from a pin you uploaded", isCustom: true, customIndex: i, colorPalette: s.color_palette || [],
