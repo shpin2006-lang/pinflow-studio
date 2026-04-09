@@ -853,32 +853,27 @@ function GenerateTab({ nicheId, nicheObj, tags, onSave, savedStyles, onAddStyle,
   }, [pendingTopic]);
 
   const generate = async () => {
-    if (!topic.trim()) { setError("Please enter a topic first!"); return; }
-    if (!tag) { setError(`Please set an affiliate tag for ${co.name} first (go to Settings tab).`); return; }
-    setLoading(true); setError(""); setStep(0); setProducts(null); setPins(null);
-window.scrollTo(0, 0);
-    try {
-      setStep(1);
-  const isFashion = nicheId === "fashion";
-const colorPrompt = isFashion ? `
-COLOR COORDINATION: Choose one cohesive palette (e.g. "Camel and White") and include the color in every product name. Add "color" field (one word) to each product. Add "palette" field (3 words max) to first product only.
-` : "";
-const prodTxt = await callAI(
-  `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).
+  if (!topic.trim()) { setError("Please enter a topic first!"); return; }
+  if (!tag) { setError(`Please set an affiliate tag for ${co.name} first (go to Settings tab).`); return; }
+  setLoading(true); setError(""); setStep(0); setProducts(null); setPins(null);
+  window.scrollTo(0, 0);
+  try {
+    // ── STEP 1: Find products ──
+    setStep(1);
+    const isFashion = nicheId === "fashion";
+    const colorPrompt = isFashion ? `COLOR COORDINATION: Choose one cohesive palette (e.g. "Camel and White") and include the color in every product name. Add "color" field (one word) to each product. Add "palette" field (3 words max) to first product only.` : "";
 
+    const prodTxt = await callAI(
+      `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).
 Topic: "${topic}"
 Target audience: ${gt}
 Currency: ${co.curr} (${co.code})
-
 ${colorPrompt}
-
 Rules:
 - If topic says a number → give exactly that many products
 - If it's a complete outfit → give all pieces needed
 - If general product type → give 5 to 7 products
-
 Recommend real products on Amazon ${co.name}.
-
 Return ONLY a JSON array. Keep ALL values SHORT. Each object:
 {
   "name": "Product name${isFashion ? " with color" : ""}",
@@ -889,53 +884,105 @@ Return ONLY a JSON array. Keep ALL values SHORT. Each object:
   "category": "${nicheObj.label}",
   "why": "One short sentence"
 }
-
 Return ONLY the JSON array. No extra text.`, 2048
-);
-      let rawProds;
-try {
-  rawProds = parseJSON(prodTxt);
-} catch (e) {
-  try {
-    const cleaned = prodTxt
-      .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
-      .replace(/,\s*}/g, "}")
-      .replace(/,\s*]/g, "]")
-      .replace(/:\s*"[^"]*\n[^"]*"/g, ': ""')
-      .replace(/\t/g, " ");
-    rawProds = parseJSON(cleaned);
-  } catch (e2) {
-    throw new Error("Could not parse products. Please try again.");
-  }
-}
-if (!Array.isArray(rawProds) || !rawProds.length) throw new Error("No products generated");
-      setStep(2);
-      const prods = rawProds.map((p, i) => {
-        const searchTerms = (p.name || "").replace(/[^a-zA-Z0-9 ]/g, "").trim().split(/\s+/).join("+");
-        return { step: i + 1, role: p.role || "", name: p.name || "", price: p.price || "", color: p.color || "", palette: i === 0 ? (p.palette || "") : "", category: p.category || nicheObj.label, why: p.why || "", amazon_search: p.name || "", affiliate_link: `https://www.${co.domain}/s?k=${searchTerms}&tag=${tag}`, image_prompt: `Product photography: ${p.name}, white background, studio lighting, sharp focus, 4K, commercial product shot` };
-      });
-      setProducts(prods);
-setError("");
-setStep(3);
-await new Promise(resolve => setTimeout(resolve, 3000));
-const productNames = prods.map(p => p.name).join(", ");
-      const pinTxt = await callAI(
-        `Generate 3 unique Pinterest pin titles for: "${topic}" (${nicheObj.label} niche).\n\nProducts: ${productNames}\n\nReturn a JSON array of 3 objects:\n{\n  "title": "Catchy 40-80 char title with 1-2 emojis",\n  "description": "100-150 char SEO description",\n  "hashtags": ["keyword1", "keyword2", "keyword3"],\n  "board": "Pinterest Board Name",\n  "style_tag": "aesthetic tag like minimal, cozy, bold",\n  "top_products": [1, 3, 5]\n}\n\nTarget: ${gt}, Country: ${co.name}\nGive 3 different angles: one listicle, one question, one aesthetic.\n\nReturn ONLY the JSON array.`, 1024
-      );
-      const pinsArr = parseJSON(pinTxt);
-      if (!Array.isArray(pinsArr) || !pinsArr.length) throw new Error("No pin titles generated");
-      setPins(pinsArr);
-      setStep(4);
+    );
+
+    // ── STEP 2: Parse products ──
+    setStep(2);
+    let rawProds;
+    try {
+      rawProds = parseJSON(prodTxt);
     } catch (e) {
-  if (!products) {
-    setError(e.message);
-  } else {
-    setError("⚠️ Pin titles failed but your products are ready! Try saving and regenerating.");
+      try {
+        const cleaned = prodTxt
+          .replace(/[\u0000-\u001F\u007F-\u009F]/g, "")
+          .replace(/,\s*}/g, "}")
+          .replace(/,\s*]/g, "]")
+          .replace(/:\s*"[^"]*\n[^"]*"/g, ': ""')
+          .replace(/\t/g, " ");
+        rawProds = parseJSON(cleaned);
+      } catch (e2) {
+        throw new Error("Could not parse products. Please try again.");
+      }
+    }
+    if (!Array.isArray(rawProds) || !rawProds.length) throw new Error("No products generated");
+
+    const prods = rawProds.map((p, i) => {
+      const searchTerms = (p.name || "").replace(/[^a-zA-Z0-9 ]/g, "").trim().split(/\s+/).join("+");
+      return {
+        step: i + 1,
+        role: p.role || "",
+        name: p.name || "",
+        price: p.price || "",
+        color: p.color || "",
+        palette: i === 0 ? (p.palette || "") : "",
+        category: p.category || nicheObj.label,
+        why: p.why || "",
+        amazon_search: p.name || "",
+        affiliate_link: `https://www.${co.domain}/s?k=${searchTerms}&tag=${tag}`,
+        image_prompt: `Product photography: ${p.name}, white background, studio lighting, sharp focus, 4K, commercial product shot`
+      };
+    });
+
+    // Show products immediately
+    setProducts(prods);
+    setError("");
+    setStep(3);
+
+    // ── STEP 3: Wait then generate pin titles ──
+    // Wait 5 seconds to avoid rate limits
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
+    const productNames = prods.map(p => p.name).join(", ");
+
+    let pinsArr = null;
+    // Try pin titles up to 3 times
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        const pinTxt = await callAI(
+          `Generate 3 Pinterest pin titles for: "${topic}" (${nicheObj.label}).
+Products: ${productNames}
+Target: ${gt}, Country: ${co.name}
+
+Return ONLY a JSON array of 3 objects:
+[
+  {
+    "title": "Catchy title with 1-2 emojis (40-80 chars)",
+    "description": "SEO description (100-150 chars)",
+    "hashtags": ["tag1", "tag2", "tag3"],
+    "board": "Board Name",
+    "style_tag": "minimal",
+    "top_products": [1, 2, 3]
   }
-} finally {
-  setLoading(false);
-}
-  };
+]
+Return ONLY the JSON array.`, 1024
+        );
+        pinsArr = parseJSON(pinTxt);
+        if (Array.isArray(pinsArr) && pinsArr.length) break;
+      } catch (pinErr) {
+        console.error(`Pin titles attempt ${attempt} failed:`, pinErr);
+        if (attempt < 3) {
+          await new Promise(resolve => setTimeout(resolve, 3000 * attempt));
+        }
+      }
+    }
+
+    if (pinsArr && pinsArr.length) {
+      setPins(pinsArr);
+    } else {
+      // Products are ready but pin titles failed — don't crash
+      setError("⚠️ Pin titles couldn't be generated but your products are ready! You can save and try generating pin titles later.");
+    }
+
+    setStep(4);
+
+  } catch (e) {
+    // Only show error if products weren't generated
+    setError(e.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const savePackage = async () => {
     setSaving(true);
