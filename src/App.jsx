@@ -861,7 +861,217 @@ function GenerateTab({ nicheId, nicheObj, tags, onSave, savedStyles, onAddStyle,
     // ── STEP 1: Find products ──
     setStep(1);
     const isFashion = nicheId === "fashion";
-    const colorPrompt = isFashion ? `COLOR COORDINATION: Choose one cohesive palette (e.g. "Camel and White") and include the color in every product name. Add "color" field (one word) to each product. Add "palette" field (3 words max) to first product only.` : "";
+    const palettes = [
+  // Neutrals & Earth Tones
+  "Camel, Cream and Brown",
+  "Beige, Tan and Ivory",
+  "Sand, Stone and White",
+  "Taupe, Greige and Cream",
+  "Khaki, Olive and Brown",
+  "Mocha, Latte and Cream",
+  "Chocolate, Caramel and Cream",
+  "Cognac, Tan and Ivory",
+  "Toffee, Nude and White",
+  "Walnut, Sand and Beige",
+
+  // Greens
+  "Sage Green, Beige and White",
+  "Forest Green, Brown and Cream",
+  "Olive, Tan and Cream",
+  "Emerald Green, Gold and Cream",
+  "Mint Green, White and Gold",
+  "Moss Green, Camel and Brown",
+  "Hunter Green, Burgundy and Cream",
+  "Seafoam, White and Sand",
+  "Sage, Dusty Rose and Cream",
+  "Eucalyptus, Ivory and Brown",
+  "Bottle Green, Camel and White",
+  "Pistachio, Cream and Gold",
+  "Fern Green, Beige and Rust",
+  "Jade, White and Gold",
+  "Chartreuse, Black and White",
+
+  // Blues
+  "Navy, Camel and Cream",
+  "Cobalt Blue, White and Brown",
+  "Powder Blue, White and Silver",
+  "Steel Blue, Grey and Cream",
+  "Denim, White and Camel",
+  "Slate Blue, Grey and White",
+  "Periwinkle, Lavender and White",
+  "Teal, Gold and Cream",
+  "Peacock Blue, Gold and White",
+  "Cerulean, White and Sand",
+  "Indigo, Cream and Gold",
+  "Sky Blue, White and Blush",
+  "Cornflower, White and Grey",
+  "Midnight Blue, Silver and White",
+  "Baby Blue, White and Cream",
+
+  // Pinks & Reds
+  "Dusty Rose, Mauve and Cream",
+  "Blush Pink, Grey and White",
+  "Burgundy, Navy and Grey",
+  "Coral, White and Gold",
+  "Salmon, Peach and Cream",
+  "Magenta, Black and White",
+  "Hot Pink, Black and White",
+  "Rose Gold, Blush and Cream",
+  "Berry, Plum and Cream",
+  "Cranberry, Gold and Ivory",
+  "Fuchsia, Purple and White",
+  "Bubblegum, White and Silver",
+  "Raspberry, Cream and Gold",
+  "Candy Pink, White and Rose Gold",
+  "Flamingo, White and Coral",
+
+  // Purples
+  "Lavender, Grey and White",
+  "Plum, Gold and Cream",
+  "Violet, Black and Silver",
+  "Lilac, White and Silver",
+  "Mauve, Rose and Cream",
+  "Amethyst, Gold and White",
+  "Grape, Cream and Gold",
+  "Orchid, White and Silver",
+  "Wisteria, Cream and Grey",
+  "Eggplant, Camel and Cream",
+
+  // Oranges & Yellows
+  "Rust Orange, Olive and Tan",
+  "Terracotta, Sand and White",
+  "Mustard Yellow, Olive and Brown",
+  "Burnt Orange, Brown and Cream",
+  "Amber, Camel and White",
+  "Saffron, White and Green",
+  "Peach, Cream and Gold",
+  "Apricot, White and Brown",
+  "Tangerine, White and Gold",
+  "Honey, Brown and Cream",
+  "Goldenrod, Brown and White",
+  "Lemon Yellow, White and Tan",
+  "Marigold, Brown and Cream",
+  "Ochre, Rust and Cream",
+  "Turmeric, White and Brown",
+
+  // Classics & Monochrome
+  "Black, White and Red",
+  "Black, White and Gold",
+  "All Black with White Accents",
+  "All White with Black Accents",
+  "Grey, White and Black",
+  "Charcoal, Burgundy and Camel",
+  "Charcoal, Red and White",
+  "Navy, White and Red",
+  "Black, Camel and White",
+  "Grey, Blush and White",
+
+  // Seasonal — Summer
+  "Coral, Turquoise and White",
+  "Lemon, White and Sky Blue",
+  "Hot Pink, Orange and White",
+  "Aqua, White and Sand",
+  "Lime Green, White and Yellow",
+  "Melon, White and Mint",
+  "Hibiscus Pink, Coral and White",
+  "Tropical Orange, Green and White",
+  "Sunshine Yellow, White and Blue",
+  "Watermelon, Lime and White",
+
+  // Seasonal — Winter
+  "Burgundy, Forest Green and Gold",
+  "Camel, Cream and Brown",
+  "Charcoal, Scarlet and Cream",
+  "Deep Navy, Silver and White",
+  "Plum, Grey and Silver",
+  "Ivory, Gold and Red",
+  "Pine Green, Cranberry and Gold",
+  "Midnight, Silver and White",
+  "Chocolate, Cream and Red",
+  "Slate, Burgundy and Cream",
+
+  // Seasonal — Autumn/Fall
+  "Rust, Mustard and Brown",
+  "Terracotta, Olive and Tan",
+  "Burgundy, Camel and Forest Green",
+  "Burnt Sienna, Ochre and Brown",
+  "Maple, Gold and Cream",
+  "Pumpkin, Brown and Beige",
+  "Chestnut, Rust and Cream",
+  "Auburn, Gold and Olive",
+  "Cinnamon, Tan and White",
+  "Harvest Gold, Brown and Rust",
+
+  // Seasonal — Spring
+  "Lavender, Mint and White",
+  "Blush Pink, Sage and Cream",
+  "Dusty Rose, Mauve and Green",
+  "Lilac, Yellow and White",
+  "Peach, Mint and Cream",
+  "Soft Yellow, Pink and White",
+  "Baby Blue, Blush and White",
+  "Mint, Coral and White",
+  "Periwinkle, Blush and Cream",
+  "Soft Violet, Green and White",
+
+  // Occasion — Formal/Evening
+  "Navy, Gold and Cream",
+  "Black, Gold and White",
+  "Emerald, Gold and Ivory",
+  "Deep Purple, Silver and Black",
+  "Midnight Blue, Silver and Cream",
+  "Champagne, Gold and Ivory",
+  "Ruby Red, Black and Gold",
+  "Royal Blue, Gold and White",
+  "Onyx, Rose Gold and Cream",
+  "Sapphire, Silver and White",
+
+  // Occasion — Casual/Everyday
+  "Sage Green, Cream and Tan",
+  "Dusty Rose, White and Denim",
+  "Camel, White and Brown",
+  "Olive, Cream and Rust",
+  "Grey, White and Blush",
+  "Denim, White and Camel",
+  "Beige, Brown and White",
+  "Soft Pink, Grey and White",
+  "Cream, Tan and Brown",
+  "Moss, Sand and Cream",
+
+  // Global/Cultural
+  "Ivory, Gold and Red",
+  "Peacock Blue, Gold and White",
+  "Magenta, Orange and Gold",
+  "Coral, Teal and Gold",
+  "Deep Purple, Gold and Cream",
+  "Saffron, White and Green",
+  "Crimson, Gold and Black",
+  "Turquoise, Orange and Brown",
+  "Jade, Red and Gold",
+  "Cobalt, White and Terracotta",
+];
+const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
+
+// Override palette based on topic keywords
+const topicLower = topic.toLowerCase();
+let selectedPalette = randomPalette;
+if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.includes("vacation")) {
+  selectedPalette = ["White and Turquoise", "Coral, White and Gold", "Lemon Yellow, White and Tan"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("winter") || topicLower.includes("christmas") || topicLower.includes("snow")) {
+  selectedPalette = ["Burgundy, Forest Green and Gold", "Camel, Cream and Brown", "Charcoal, Red and White"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("spring") || topicLower.includes("floral") || topicLower.includes("garden")) {
+  selectedPalette = ["Lavender, Mint and White", "Blush Pink, Sage and Cream", "Dusty Rose, Mauve and Green"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("autumn") || topicLower.includes("fall") || topicLower.includes("october")) {
+  selectedPalette = ["Rust, Mustard and Brown", "Terracotta, Olive and Tan", "Burgundy, Camel and Forest Green"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("wedding") || topicLower.includes("formal") || topicLower.includes("gala")) {
+  selectedPalette = ["Navy, Gold and Cream", "Black, Gold and White", "Emerald, Gold and Ivory"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("casual") || topicLower.includes("weekend") || topicLower.includes("brunch")) {
+  selectedPalette = ["Sage Green, Cream and Tan", "Dusty Rose, White and Denim", "Camel, White and Brown"][Math.floor(Math.random() * 3)];
+} else if (topicLower.includes("office") || topicLower.includes("work") || topicLower.includes("business")) {
+  selectedPalette = ["Navy, Grey and White", "Charcoal, Burgundy and Cream", "Forest Green, Camel and White"][Math.floor(Math.random() * 3)];
+}
+
+const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
 
     const prodTxt = await callAI(
       `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).
