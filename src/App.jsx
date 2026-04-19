@@ -1079,41 +1079,40 @@ if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.
 const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
 
     const fashionPrompt = isFashion ? `
-You are a professional fashion stylist and personal shopper with expertise in current trends.
+You are an expert fashion stylist with deep knowledge of current ${new Date().getFullYear()} trends.
 
-STYLING RULES:
-- Create a COMPLETE, WEARABLE outfit that looks genuinely good together
-- Follow current ${new Date().getFullYear()} fashion trends
-- Think like a real stylist — consider silhouette, proportion, and balance
-- Mix basics with statement pieces
-- Consider the occasion: "${topic}"
-- Target: ${gt}
+TASK: Create a complete, stylish, wearable outfit for: "${topic}"
+TARGET: ${gt}
+COLOR PALETTE: "${selectedPalette}"
+MARKET: ${co.name} (${co.domain})
+CURRENCY: ${co.curr}
 
-OUTFIT STRUCTURE (include ALL of these):
-1. Top (shirt/blouse/sweater/jacket)
-2. Bottom (pants/skirt/shorts/jeans) OR Full piece (dress/jumpsuit)
-3. Outerwear if appropriate (jacket/coat/blazer)
-4. Footwear (shoes/boots/sneakers)
-5. Bag (handbag/backpack/clutch)
-6. 1-2 Accessories (watch/jewelry/belt/sunglasses/hat)
+USE YOUR FASHION EXPERTISE TO:
+1. Decide the best outfit style for this occasion/topic
+2. Choose the right silhouette and proportions
+3. Pick pieces that genuinely look great together
+4. Select real well-known brands available on Amazon
+5. Mix price points naturally
 
-COLOR PALETTE TO USE: "${selectedPalette}"
-- Every item MUST be in a color from this palette
-- Colors should complement each other perfectly
-- Include exact color in product name
+OUTFIT MUST INCLUDE:
+- A top (shirt/tee/blouse/sweater — whatever fits best)
+- A bottom (jeans/trousers/skirt/shorts — your choice based on occasion) OR a full piece (dress/jumpsuit)
+- Footwear (whatever fits the outfit best)
+- A bag (whatever fits the occasion)
+- 1-2 accessories (whatever completes the look)
+- Outerwear ONLY if it makes sense for the occasion
 
-FASHION TRENDS TO CONSIDER:
-- Clean minimal aesthetics
-- Elevated basics
-- Tonal dressing
-- Mix of textures (linen, cotton, leather, denim)
-- Proportional dressing (loose top + fitted bottom OR fitted top + wide leg)
-- Contemporary silhouettes
+COLOR RULES:
+- Every item MUST be in a color from this palette: "${selectedPalette}"
+- Include exact color in every product name
+- Colors must look genuinely good together
 
-QUALITY GUIDELINES:
-- Recommend well-known real brands available on Amazon
-- Mix price points (some affordable, some investment pieces)
-- Products must actually exist and be searchable
+QUALITY RULES:
+- Use REAL brands: Levi's, Nike, Zara, H&M, Calvin Klein, Ralph Lauren, Tommy Hilfiger, Adidas, New Balance, Coach, Fossil, Ray-Ban, Mango, ASOS, Free People, Anthropologie, J.Crew, Gap, Uniqlo, etc.
+- Products must actually exist and be searchable on Amazon
+- Think about real styling — proportions, textures, balance
+- The outfit must look like something from a fashion magazine or Pinterest board
+- Every piece must serve a clear purpose in the outfit
 ` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
 
 const prodTxt = await callAI(
