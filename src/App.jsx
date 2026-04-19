@@ -345,7 +345,12 @@ function ProductCard({ product, color, index }) {
     🎨 Outfit Palette: {p.palette}
   </div>
 )}
-          {p.why && <p style={{ fontSize: 13, color: T.textSoft, lineHeight: 1.55, marginBottom: 12 }}>{p.why}</p>}
+          {p.style_tip && (
+  <div style={{ marginBottom: 8, padding: "8px 12px", background: "#F0F7FF", borderRadius: T.radiusXs, fontSize: 12, fontWeight: 600, color: "#1565C0" }}>
+    💡 Style Tip: {p.style_tip}
+  </div>
+)}
+{p.why && <p style={{ fontSize: 13, color: T.textSoft, lineHeight: 1.55, marginBottom: 12 }}>{p.why}</p>}
          {p.affiliate_link && (
   <div style={{ marginBottom: 14 }}>
     {/* Big clickable Amazon button */}
@@ -1073,29 +1078,71 @@ if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.
 
 const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
 
-    const prodTxt = await callAI(
-      `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).
+    const fashionPrompt = isFashion ? `
+You are a professional fashion stylist and personal shopper with expertise in current trends.
+
+STYLING RULES:
+- Create a COMPLETE, WEARABLE outfit that looks genuinely good together
+- Follow current ${new Date().getFullYear()} fashion trends
+- Think like a real stylist — consider silhouette, proportion, and balance
+- Mix basics with statement pieces
+- Consider the occasion: "${topic}"
+- Target: ${gt}
+
+OUTFIT STRUCTURE (include ALL of these):
+1. Top (shirt/blouse/sweater/jacket)
+2. Bottom (pants/skirt/shorts/jeans) OR Full piece (dress/jumpsuit)
+3. Outerwear if appropriate (jacket/coat/blazer)
+4. Footwear (shoes/boots/sneakers)
+5. Bag (handbag/backpack/clutch)
+6. 1-2 Accessories (watch/jewelry/belt/sunglasses/hat)
+
+COLOR PALETTE TO USE: "${selectedPalette}"
+- Every item MUST be in a color from this palette
+- Colors should complement each other perfectly
+- Include exact color in product name
+
+FASHION TRENDS TO CONSIDER:
+- Clean minimal aesthetics
+- Elevated basics
+- Tonal dressing
+- Mix of textures (linen, cotton, leather, denim)
+- Proportional dressing (loose top + fitted bottom OR fitted top + wide leg)
+- Contemporary silhouettes
+
+QUALITY GUIDELINES:
+- Recommend well-known real brands available on Amazon
+- Mix price points (some affordable, some investment pieces)
+- Products must actually exist and be searchable
+` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
+
+const prodTxt = await callAI(
+  `${fashionPrompt}
+
 Topic: "${topic}"
 Target audience: ${gt}
 Currency: ${co.curr} (${co.code})
-${colorPrompt}
-Rules:
+Amazon marketplace: ${co.domain}
+
+${!isFashion ? `Rules:
 - If topic says a number → give exactly that many products
-- If it's a complete outfit → give all pieces needed
-- If general product type → give 5 to 7 products
-Recommend real products on Amazon ${co.name}.
+- If it's a complete routine → give all steps needed
+- If general product type → give 5 to 7 products` : ""}
+
 Return ONLY a JSON array. Keep ALL values SHORT. Each object:
 {
-  "name": "Product name${isFashion ? " with color" : ""}",
-  "role": "Brief role",
-  ${isFashion ? '"color": "One word color",' : ""}
-  ${isFashion ? '"palette": "3 words max, first product only, else empty string",' : ""}
-  "price": "${co.curr}29",
+  "name": "${isFashion ? "Brand + Color + Product name (e.g. Levi's Black Slim Jeans)" : "Exact product name"}",
+  "role": "${isFashion ? "Outfit role (e.g. Bottom, Footwear, Outerwear)" : "Brief role"}",
+  ${isFashion ? '"color": "Exact color (one word)",' : ""}
+  ${isFashion ? '"palette": "Full palette name, first product only, else empty string",' : ""}
+  ${isFashion ? '"style_tip": "One sentence on how to style this piece in the outfit",' : ""}
+  "price": "${co.curr}XX",
   "category": "${nicheObj.label}",
-  "why": "One short sentence"
+  "why": "One short sentence why this works"
 }
+
 Return ONLY the JSON array. No extra text.`, 2048
-    );
+);
 
     // ── STEP 2: Parse products ──
     setStep(2);
