@@ -1078,7 +1078,33 @@ if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.
 
 const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
 
-    const fashionPrompt = isFashion ? `
+    // Detect if topic is a specific product list vs full outfit
+const productListKeywords = [
+  "top ", "best ", "15 ", "10 ", "5 ", "7 ", "20 ",
+  "t-shirts", "shirts", "jeans", "dresses", "shoes",
+  "sneakers", "bags", "sunglasses", "watches", "jackets",
+  "sweaters", "hoodies", "pants", "skirts", "boots",
+  "heels", "sandals", "accessories", "belts"
+];
+const isProductList = productListKeywords.some(k => topic.toLowerCase().includes(k));
+
+const fashionPrompt = isFashion ? (
+  isProductList ? `
+You are a fashion product expert with knowledge of current ${new Date().getFullYear()} trends.
+
+TASK: Recommend specific products matching: "${topic}"
+TARGET: ${gt}
+MARKET: ${co.name}
+
+RULES:
+- If topic specifies a number (e.g. "15 t-shirts") → give EXACTLY that many products
+- All products should be of the SAME type as mentioned in topic
+- Use REAL brands available on Amazon (Levi's, Nike, Zara, H&M, Uniqlo, Gap, J.Crew, Ralph Lauren, Calvin Klein, etc.)
+- Each product should be DIFFERENT in some way — different brand, color, style, fit, or feature
+- Give variety — not all products should look the same
+- Mix price points
+- Vary colors — don't make everything the same color
+` : `
 You are an expert fashion stylist with deep knowledge of current ${new Date().getFullYear()} trends.
 
 TASK: Create a complete, stylish, wearable outfit for: "${topic}"
@@ -1113,7 +1139,8 @@ QUALITY RULES:
 - Think about real styling — proportions, textures, balance
 - The outfit must look like something from a fashion magazine or Pinterest board
 - Every piece must serve a clear purpose in the outfit
-` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
+`
+) : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
 
 const prodTxt = await callAI(
   `${fashionPrompt}
