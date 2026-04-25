@@ -1078,69 +1078,43 @@ if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.
 
 const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
 
-    // Detect if topic is a specific product list vs full outfit
-const productListKeywords = [
-  "top ", "best ", "15 ", "10 ", "5 ", "7 ", "20 ",
-  "t-shirts", "shirts", "jeans", "dresses", "shoes",
-  "sneakers", "bags", "sunglasses", "watches", "jackets",
-  "sweaters", "hoodies", "pants", "skirts", "boots",
-  "heels", "sandals", "accessories", "belts"
-];
-const isProductList = productListKeywords.some(k => topic.toLowerCase().includes(k));
+    
 
-const fashionPrompt = isFashion ? (
-  isProductList ? `
-You are a fashion product expert with knowledge of current ${new Date().getFullYear()} trends.
-
-TASK: Recommend specific products matching: "${topic}"
-TARGET: ${gt}
-MARKET: ${co.name}
-
-RULES:
-- If topic specifies a number (e.g. "15 t-shirts") → give EXACTLY that many products
-- All products should be of the SAME type as mentioned in topic
-- Use REAL brands available on Amazon (Levi's, Nike, Zara, H&M, Uniqlo, Gap, J.Crew, Ralph Lauren, Calvin Klein, etc.)
-- Each product should be DIFFERENT in some way — different brand, color, style, fit, or feature
-- Give variety — not all products should look the same
-- Mix price points
-- Vary colors — don't make everything the same color
-` : `
+const fashionPrompt = isFashion ? `
 You are an expert fashion stylist with deep knowledge of current ${new Date().getFullYear()} trends.
 
-TASK: Create a complete, stylish, wearable outfit for: "${topic}"
+TASK: "${topic}"
 TARGET: ${gt}
-COLOR PALETTE: "${selectedPalette}"
 MARKET: ${co.name} (${co.domain})
 CURRENCY: ${co.curr}
 
-USE YOUR FASHION EXPERTISE TO:
-1. Decide the best outfit style for this occasion/topic
-2. Choose the right silhouette and proportions
-3. Pick pieces that genuinely look great together
-4. Select real well-known brands available on Amazon
-5. Mix price points naturally
+UNDERSTAND THE TOPIC AND DECIDE:
 
-OUTFIT MUST INCLUDE:
-- A top (shirt/tee/blouse/sweater — whatever fits best)
-- A bottom (jeans/trousers/skirt/shorts — your choice based on occasion) OR a full piece (dress/jumpsuit)
-- Footwear (whatever fits the outfit best)
-- A bag (whatever fits the occasion)
-- 1-2 accessories (whatever completes the look)
-- Outerwear ONLY if it makes sense for the occasion
+1. IS IT A PRODUCT LIST OR A COMPLETE OUTFIT?
+   - Read the topic carefully
+   - If user wants specific products (e.g. "15 linen t-shirts", "best sneakers", "top 10 jeans") → recommend that exact type and quantity of products
+   - If user wants a styled look (e.g. "brunch outfit", "date night look", "summer vibes") → create a complete coordinated outfit
+   - Use your judgment — you're the stylist
 
-COLOR RULES:
-- Every item MUST be in a color from this palette: "${selectedPalette}"
-- Include exact color in every product name
-- Colors must look genuinely good together
+2. APPROPRIATE COLOR PALETTE:
+   - For complete outfits: use this cohesive palette: "${selectedPalette}"
+   - For product lists: vary colors naturally — show variety
+   - Include exact color in every product name
 
-QUALITY RULES:
-- Use REAL brands: Levi's, Nike, Zara, H&M, Calvin Klein, Ralph Lauren, Tommy Hilfiger, Adidas, New Balance, Coach, Fossil, Ray-Ban, Mango, ASOS, Free People, Anthropologie, J.Crew, Gap, Uniqlo, etc.
-- Products must actually exist and be searchable on Amazon
-- Think about real styling — proportions, textures, balance
-- The outfit must look like something from a fashion magazine or Pinterest board
-- Every piece must serve a clear purpose in the outfit
-`
-) : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
+3. QUALITY & VARIETY:
+   - Use REAL brands available on Amazon (Levi's, Nike, Zara, H&M, Uniqlo, Gap, J.Crew, Ralph Lauren, Calvin Klein, Tommy Hilfiger, Adidas, New Balance, Coach, Fossil, Ray-Ban, Mango, ASOS, Free People, Anthropologie, etc.)
+   - For complete outfits: pieces must look genuinely good together with proper proportions and balance
+   - For product lists: each item should differ in style, fit, brand, color or feature
+   - Mix price points naturally
+   - Follow current ${new Date().getFullYear()} fashion trends
+
+4. NUMBER OF PRODUCTS:
+   - If topic specifies a number → give EXACTLY that many
+   - For complete outfits → give what makes the outfit complete (usually 5-8 pieces)
+   - For general product types → give 5 to 10 products
+
+USE YOUR FASHION EXPERTISE — don't follow a rigid template. Think like a real stylist who understands what the user actually needs.
+` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
 
 const prodTxt = await callAI(
   `${fashionPrompt}
