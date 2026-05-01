@@ -1267,13 +1267,13 @@ ${!isFashion ? `Rules:
 
 Return ONLY a JSON array. Keep ALL values SHORT. Each object:
 {
-  "name": "${isFashion ? "Brand + Color + Specific product (e.g. Levis Sage Green 501 Slim Jeans)" : "Exact product name"}",
-  "role": "${isFashion ? "Outfit role (Anchor/Balancing/Foundation/Footwear/Bag/Accessory/Outerwear)" : "Brief role"}",
-  ${isFashion ? '"color": "Specific color (e.g. Sage Green not just Green)",' : ""}
-  ${isFashion ? '"palette": "Your chosen palette, ONLY first product (e.g. Navy Cream and Tan), else empty string",' : ""}
-  ${isFashion ? '"texture": "Fabric/material (e.g. Linen, Leather, Cashmere, Denim)",' : ""}
-  ${isFashion ? '"style_tip": "Specific styling instruction (e.g. Half-tuck for casual look)",' : ""}
-  ${isFashion ? '"why_it_works": "Why this piece elevates the outfit in one sentence",' : ""}
+  "name": "${isFashion ? 'Brand + Color + Specific product (e.g. Levis Sage Green 501 Slim Jeans)' : 'Exact product name'}",
+  "role": "${isFashion ? 'Outfit role (Anchor/Balancing/Foundation/Footwear/Bag/Accessory/Outerwear)' : 'Brief role'}",
+  ${isFashion ? `"color": "Specific color name",` : ""}
+  ${isFashion ? `"palette": "Full palette only on first product else empty string",` : ""}
+  ${isFashion ? `"texture": "Fabric or material name",` : ""}
+  ${isFashion ? `"style_tip": "Short styling instruction",` : ""}
+  ${isFashion ? `"why_it_works": "Why this piece works in one sentence",` : ""}
   "price": "${co.curr}XX",
   "category": "${nicheObj.label}",
   "why": "One short sentence why this works"
