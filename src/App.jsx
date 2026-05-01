@@ -1267,7 +1267,7 @@ ${!isFashion ? `Rules:
 
 Return ONLY a JSON array. Keep ALL values SHORT. Each object:
 {
-  "name": "${isFashion ? "Brand + Color + Specific product (e.g. Levi's Sage Green 501 Slim Jeans)" : "Exact product name"}",
+  "name": "${isFashion ? "Brand + Color + Specific product (e.g. Levis Sage Green 501 Slim Jeans)" : "Exact product name"}",
   "role": "${isFashion ? "Outfit role (Anchor/Balancing/Foundation/Footwear/Bag/Accessory/Outerwear)" : "Brief role"}",
   ${isFashion ? '"color": "Specific color (e.g. Sage Green not just Green)",' : ""}
   ${isFashion ? '"palette": "Your chosen palette, ONLY first product (e.g. Navy Cream and Tan), else empty string",' : ""}
