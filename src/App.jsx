@@ -1254,32 +1254,27 @@ FINAL CHECK — Before finalizing, verify:
 ` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
 
 const prodTxt = await callAI(
-  `${fashionPrompt}
+  fashionPrompt + `
+
 Topic: "${topic}"
 Target audience: ${gt}
 Currency: ${co.curr} (${co.code})
 Amazon marketplace: ${co.domain}
 
 ${!isFashion ? `Rules:
-- If topic says a number → give exactly that many products
-- If it's a complete routine → give all steps needed
-- If general product type → give 5 to 7 products` : ""}
+- If topic says a number, give exactly that many products
+- If complete routine, give all steps needed
+- If general product type, give 5 to 7 products` : ""}
 
-Return ONLY a JSON array. Keep ALL values SHORT. Each object:
-{
-  "name": "${isFashion ? 'Brand + Color + Specific product (e.g. Levis Sage Green 501 Slim Jeans)' : 'Exact product name'}",
-  "role": "${isFashion ? 'Outfit role (Anchor/Balancing/Foundation/Footwear/Bag/Accessory/Outerwear)' : 'Brief role'}",
-  ${isFashion ? `"color": "Specific color name",` : ""}
-  ${isFashion ? `"palette": "Full palette only on first product else empty string",` : ""}
-  ${isFashion ? `"texture": "Fabric or material name",` : ""}
-  ${isFashion ? `"style_tip": "Short styling instruction",` : ""}
-  ${isFashion ? `"why_it_works": "Why this piece works in one sentence",` : ""}
-  "price": "${co.curr}XX",
-  "category": "${nicheObj.label}",
-  "why": "One short sentence why this works"
-}
+Return ONLY a JSON array. Each object must have these fields:
+- name: Product name including brand and color for fashion
+- role: Brief role of this item
+${isFashion ? "- color: Specific color name\\n- palette: Only first product gets full palette name others empty\\n- texture: Fabric or material\\n- style_tip: Short styling instruction\\n- why_it_works: Why this piece works" : ""}
+- price: Realistic price in ${co.curr}
+- category: ${nicheObj.label}
+- why: One short sentence why this works
 
-Return ONLY the JSON array. No extra text.
+Return ONLY the JSON array. No extra text or markdown.`, 2048
 );
 
     // ── STEP 2: Parse products ──
