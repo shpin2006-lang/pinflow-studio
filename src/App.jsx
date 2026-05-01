@@ -345,9 +345,19 @@ function ProductCard({ product, color, index }) {
     🎨 Outfit Palette: {p.palette}
   </div>
 )}
-          {p.style_tip && (
-  <div style={{ marginBottom: 8, padding: "8px 12px", background: "#F0F7FF", borderRadius: T.radiusXs, fontSize: 12, fontWeight: 600, color: "#1565C0" }}>
-    💡 Style Tip: {p.style_tip}
+         {p.style_tip && (
+  <div style={{ marginBottom: 6, padding: "8px 12px", background: "#F0F7FF", borderRadius: T.radiusXs, fontSize: 12, fontWeight: 600, color: "#1565C0" }}>
+    💡 <strong>Style Tip:</strong> {p.style_tip}
+  </div>
+)}
+{p.texture && (
+  <div style={{ marginBottom: 6, fontSize: 11, color: T.textSoft, fontWeight: 600 }}>
+    🧵 Texture: {p.texture}
+  </div>
+)}
+{p.why_it_works && (
+  <div style={{ marginBottom: 8, padding: "8px 12px", background: "#FFF8E1", borderRadius: T.radiusXs, fontSize: 12, fontWeight: 600, color: "#E65100" }}>
+    ✨ <strong>Why it Works:</strong> {p.why_it_works}
   </div>
 )}
 {p.why && <p style={{ fontSize: 13, color: T.textSoft, lineHeight: 1.55, marginBottom: 12 }}>{p.why}</p>}
@@ -1056,64 +1066,191 @@ function GenerateTab({ nicheId, nicheObj, tags, onSave, savedStyles, onAddStyle,
   "Cobalt, White and Terracotta",
 ];
 const randomPalette = palettes[Math.floor(Math.random() * palettes.length)];
-
-// Override palette based on topic keywords
-const topicLower = topic.toLowerCase();
-let selectedPalette = randomPalette;
-if (topicLower.includes("summer") || topicLower.includes("beach") || topicLower.includes("vacation")) {
-  selectedPalette = ["White and Turquoise", "Coral, White and Gold", "Lemon Yellow, White and Tan"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("winter") || topicLower.includes("christmas") || topicLower.includes("snow")) {
-  selectedPalette = ["Burgundy, Forest Green and Gold", "Camel, Cream and Brown", "Charcoal, Red and White"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("spring") || topicLower.includes("floral") || topicLower.includes("garden")) {
-  selectedPalette = ["Lavender, Mint and White", "Blush Pink, Sage and Cream", "Dusty Rose, Mauve and Green"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("autumn") || topicLower.includes("fall") || topicLower.includes("october")) {
-  selectedPalette = ["Rust, Mustard and Brown", "Terracotta, Olive and Tan", "Burgundy, Camel and Forest Green"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("wedding") || topicLower.includes("formal") || topicLower.includes("gala")) {
-  selectedPalette = ["Navy, Gold and Cream", "Black, Gold and White", "Emerald, Gold and Ivory"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("casual") || topicLower.includes("weekend") || topicLower.includes("brunch")) {
-  selectedPalette = ["Sage Green, Cream and Tan", "Dusty Rose, White and Denim", "Camel, White and Brown"][Math.floor(Math.random() * 3)];
-} else if (topicLower.includes("office") || topicLower.includes("work") || topicLower.includes("business")) {
-  selectedPalette = ["Navy, Grey and White", "Charcoal, Burgundy and Cream", "Forest Green, Camel and White"][Math.floor(Math.random() * 3)];
-}
-
-const colorPrompt = isFashion ? `COLOR COORDINATION: Use ONLY this specific color palette: "${selectedPalette}". Every product MUST be in one of these colors. Include the exact color in every product name (e.g. "Camel Wool Blazer"). Add "color" field (one word) to each product. Add "palette" field showing "${selectedPalette}" to first product only. Do NOT use blue and white unless it is part of the specified palette.` : "";
+const selectedPalette = isFashion ? "" : randomPalette;
+const colorPrompt = "";
 
     
 
 const fashionPrompt = isFashion ? `
-You are an expert fashion stylist with deep knowledge of current ${new Date().getFullYear()} trends.
+You are a senior fashion stylist who has worked at Vogue, GQ and ELLE magazines. You have 15+ years of experience styling celebrities and creating editorial fashion content. Your outfits regularly go viral on Pinterest and Instagram.
 
+══════════════════════════════════════════════
 TASK: "${topic}"
 TARGET: ${gt}
+COLOR PALETTE: Choose the perfect colors yourself based on:
+- The occasion/topic
+- Current ${new Date().getFullYear()} trends
+- Season (current month: ${new Date().toLocaleString('default', { month: 'long' })})
+- What genuinely looks good together
+- 60-30-10 color rule
 MARKET: ${co.name} (${co.domain})
 CURRENCY: ${co.curr}
+YEAR: ${new Date().getFullYear()}
+══════════════════════════════════════════════
 
-UNDERSTAND THE TOPIC AND DECIDE:
+═══ STEP 1: ANALYZE THE REQUEST ═══
+Read the topic carefully. Decide:
+- Is this a complete outfit request? → Build a full styled look
+- Is this a product list request (e.g. "10 sneakers")? → Curate variety with quality
+- What occasion/mood does this evoke?
+- What's the styling goal?
 
-1. IS IT A PRODUCT LIST OR A COMPLETE OUTFIT?
-   - Read the topic carefully
-   - If user wants specific products (e.g. "15 linen t-shirts", "best sneakers", "top 10 jeans") → recommend that exact type and quantity of products
-   - If user wants a styled look (e.g. "brunch outfit", "date night look", "summer vibes") → create a complete coordinated outfit
-   - Use your judgment — you're the stylist
+═══ STEP 2: APPLY DESIGNER PRINCIPLES ═══
 
-2. APPROPRIATE COLOR PALETTE:
-   - For complete outfits: use this cohesive palette: "${selectedPalette}"
-   - For product lists: vary colors naturally — show variety
-   - Include exact color in every product name
+🎨 COLOR THEORY (60-30-10 Rule):
+- YOU choose the perfect color palette for this outfit
+- Consider the occasion, season, and target audience
+- 60% dominant color (largest piece — usually bottom or main top)
+- 30% secondary color (supporting pieces)
+- 10% accent color (small details, accessories)
+- Maximum 3 colors in one outfit
+- Always include at least ONE neutral (white/cream/beige/grey/camel/black/navy)
+- Accent color should appear in 1-2 small pieces only (bag, watch, belt)
+- Match metal tones throughout (all gold OR all silver — never mix)
+- Colors must be currently trending and look genuinely good together
+- Include exact color name in every product name
+- Add "palette" field to first product showing your chosen palette (e.g. "Navy, Cream and Tan")
 
-3. QUALITY & VARIETY:
-   - Use REAL brands available on Amazon (Levi's, Nike, Zara, H&M, Uniqlo, Gap, J.Crew, Ralph Lauren, Calvin Klein, Tommy Hilfiger, Adidas, New Balance, Coach, Fossil, Ray-Ban, Mango, ASOS, Free People, Anthropologie, etc.)
-   - For complete outfits: pieces must look genuinely good together with proper proportions and balance
-   - For product lists: each item should differ in style, fit, brand, color or feature
-   - Mix price points naturally
-   - Follow current ${new Date().getFullYear()} fashion trends
+SEASONAL COLOR GUIDANCE:
+- Spring: Pastels, soft pinks, sage, lavender, butter yellow
+- Summer: Coral, turquoise, bright white, citrus, cobalt
+- Autumn: Rust, camel, burgundy, olive, mustard, brown
+- Winter: Deep navy, burgundy, forest green, camel, cream, charcoal
+- Current season: ${(() => {
+    const m = new Date().getMonth();
+    if (m >= 2 && m <= 4) return "Spring";
+    if (m >= 5 && m <= 7) return "Summer";
+    if (m >= 8 && m <= 10) return "Autumn";
+    return "Winter";
+  })()}
 
-4. NUMBER OF PRODUCTS:
-   - If topic specifies a number → give EXACTLY that many
-   - For complete outfits → give what makes the outfit complete (usually 5-8 pieces)
-   - For general product types → give 5 to 10 products
+TRENDING COLOR COMBINATIONS RIGHT NOW:
+- Camel + White + Cognac (timeless classic)
+- Sage Green + Cream + Brown (nature-inspired)
+- Navy + Cream + Gold (nautical luxe)
+- Burgundy + Camel + Black (rich autumn)
+- Dusty Rose + Grey + White (soft minimal)
+- Olive + Rust + Cream (earthy editorial)
+- Charcoal + Burgundy + Camel (sophisticated dark)
+- Cream + Tan + Brown (tonal neutral)
+- Forest Green + Camel + White (outdoorsy luxe)
+- Cobalt + White + Tan (bold classic)
 
-USE YOUR FASHION EXPERTISE — don't follow a rigid template. Think like a real stylist who understands what the user actually needs.
+📐 SILHOUETTE & PROPORTION RULES:
+- Oversized top → fitted/tapered bottom
+- Fitted top → wide leg or relaxed bottom
+- Cropped top → high waisted bottom
+- Long coat → shorter or fitted bottom
+- Maxi/long bottom → fitted or tucked top
+- NEVER pair oversized top with oversized bottom (looks sloppy)
+- NEVER pair fitted top with fitted bottom (looks dated)
+- Create visual balance — one piece is the statement, others support
+
+🧵 TEXTURE MIXING:
+- Always mix at least 2 different textures
+- Smooth + textured (silk + denim)
+- Matte + sheen (cotton + leather)
+- Soft + structured (knit + tailored)
+- Natural + technical (linen + nylon)
+- Avoid same fabric head to toe (boring)
+
+✨ STYLING DETAILS THAT ELEVATE:
+- Half-tuck or French tuck shirts (never just hanging)
+- Cuff sleeves intentionally (1-2 rolls)
+- Add a belt for waist definition
+- Layer necklaces at different lengths (women)
+- Stack rings or bracelets for visual interest
+- Sunglasses on head as accessory
+- Roll pant hems to show ankle
+- Pop the collar slightly
+- Top button styling (one open, top closed, etc.)
+
+═══ STEP 3: CURRENT TRENDS ${new Date().getFullYear()} ═══
+
+WHAT'S IN:
+- Quiet luxury aesthetic
+- Tonal dressing (variations of one color)
+- Wide leg trousers
+- Loafers and ballet flats
+- Oversized blazers
+- Linen everything (summer)
+- Maxi skirts
+- Cargo pants (refined cuts)
+- Leather details
+- Cashmere basics
+- Statement bags
+- Minimal jewelry stacked
+- Earth tones
+- Sage green, butter yellow, burgundy
+- Boat shoes (men)
+- Silver jewelry comeback
+
+WHAT'S OUT:
+- Skinny jeans (replaced by straight/wide)
+- Logo-heavy pieces
+- Skinny scarves
+- Crop tops with low rise (trying too hard)
+- Athleisure as outfits
+- Fast fashion looks
+- Matchy-matchy outfits
+
+═══ STEP 4: BUILD THE OUTFIT ═══
+
+For COMPLETE OUTFITS include:
+1. ANCHOR PIECE (the hero — the most interesting item)
+2. BALANCING PIECE (complements the anchor)
+3. FOUNDATION PIECE (basic that ties it together)
+4. FOOTWEAR (always considered, never afterthought)
+5. BAG (must match metal tone of jewelry)
+6. 1-2 ACCESSORIES (jewelry/watch/sunglasses/belt/hat)
+7. OUTERWEAR (only if it adds to the look)
+
+For PRODUCT LISTS:
+- Each item must DIFFER meaningfully (brand, fit, color, detail)
+- Mix premium and accessible price points
+- Include both classic and trend-forward options
+- Show range — not all the same style
+
+═══ STEP 5: BRAND SELECTION ═══
+
+REAL BRANDS TO USE (Amazon-available):
+
+PREMIUM/INVESTMENT:
+- Polo Ralph Lauren, Tommy Hilfiger, Calvin Klein, Lacoste
+- Coach, Michael Kors, Kate Spade, Tory Burch
+- Ray-Ban, Persol, Oakley, Quay
+- Fossil, Citizen, Daniel Wellington, Casio
+
+MID-RANGE QUALITY:
+- Levi's, Wrangler, Lee, Madewell
+- Banana Republic, J.Crew, Gap, Uniqlo
+- Cole Haan, Clarks, Sperry, Sam Edelman
+- Adidas, Nike, New Balance, Converse, Vans
+
+ACCESSIBLE QUALITY:
+- H&M, Mango, Zara, ASOS
+- Old Navy, Target's Goodfellow, A New Day
+- Steve Madden, Aldo, DSW
+- Amazon Essentials, Goodthreads
+
+═══ STEP 6: REASONING ═══
+
+Every product choice must answer:
+- WHY this piece? (its role in the outfit)
+- HOW does it work with the others? (visual harmony)
+- WHAT styling tip elevates it? (insider stylist knowledge)
+
+══════════════════════════════════════════════
+FINAL CHECK — Before finalizing, verify:
+✓ Does this outfit follow color theory?
+✓ Are proportions balanced?
+✓ Is there texture variety?
+✓ Would a Vogue editor approve this look?
+✓ Could a fashion-conscious person actually wear this?
+✓ Does each piece earn its place?
+✓ Are brand choices realistic and Amazon-available?
+✓ Is it on-trend without being trendy-overdone?
+══════════════════════════════════════════════
 ` : `You are a ${nicheObj.label} product expert for ${co.name} (${co.domain}).`;
 
 const prodTxt = await callAI(
@@ -1131,17 +1268,19 @@ ${!isFashion ? `Rules:
 
 Return ONLY a JSON array. Keep ALL values SHORT. Each object:
 {
-  "name": "${isFashion ? "Brand + Color + Product name (e.g. Levi's Black Slim Jeans)" : "Exact product name"}",
-  "role": "${isFashion ? "Outfit role (e.g. Bottom, Footwear, Outerwear)" : "Brief role"}",
-  ${isFashion ? '"color": "Exact color (one word)",' : ""}
-  ${isFashion ? '"palette": "Full palette name, first product only, else empty string",' : ""}
-  ${isFashion ? '"style_tip": "One sentence on how to style this piece in the outfit",' : ""}
+  "name": "${isFashion ? "Brand + Color + Specific product (e.g. Levi's Sage Green 501 Slim Jeans)" : "Exact product name"}",
+  "role": "${isFashion ? "Outfit role (Anchor/Balancing/Foundation/Footwear/Bag/Accessory/Outerwear)" : "Brief role"}",
+  ${isFashion ? '"color": "Specific color (e.g. Sage Green not just Green)",' : ""}
+  ${isFashion ? '"palette": "Your chosen palette, ONLY first product (e.g. Navy Cream and Tan), else empty string",' : ""}
+  ${isFashion ? '"texture": "Fabric/material (e.g. Linen, Leather, Cashmere, Denim)",' : ""}
+  ${isFashion ? '"style_tip": "Specific styling instruction (e.g. Half-tuck for casual look)",' : ""}
+  ${isFashion ? '"why_it_works": "Why this piece elevates the outfit in one sentence",' : ""}
   "price": "${co.curr}XX",
   "category": "${nicheObj.label}",
   "why": "One short sentence why this works"
 }
 
-Return ONLY the JSON array. No extra text.`, 2048
+Return ONLY the JSON array. No extra text.
 );
 
     // ── STEP 2: Parse products ──
