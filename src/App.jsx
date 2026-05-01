@@ -1255,7 +1255,6 @@ FINAL CHECK — Before finalizing, verify:
 
 const prodTxt = await callAI(
   `${fashionPrompt}
-
 Topic: "${topic}"
 Target audience: ${gt}
 Currency: ${co.curr} (${co.code})
