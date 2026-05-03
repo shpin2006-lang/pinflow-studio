@@ -1072,7 +1072,11 @@ const colorPrompt = "";
     
 
 const fashionPrompt = isFashion ? `
-You are a senior fashion stylist who has worked at Vogue, GQ and ELLE magazines. You have 15+ years of experience styling celebrities and creating editorial fashion content. Your outfits regularly go viral on Pinterest and Instagram.
+You are a senior fashion stylist who has worked at Vogue, GQ and ELLE magazines.
+
+⚠️ CRITICAL CREATIVITY RULE: Every outfit you create must have its OWN unique personality and color story. Do not default to the same colors repeatedly. Push your creativity. Use your full knowledge of fashion to surprise and inspire.You have 15+ years of experience styling celebrities and creating editorial fashion content. Your outfits regularly go viral on Pinterest and Instagram.
+
+Generation seed: ${Math.random().toString(36).substring(7)} 
 
 ══════════════════════════════════════════════
 TASK: "${topic}"
@@ -1098,7 +1102,14 @@ Read the topic carefully. Decide:
 ═══ STEP 2: APPLY DESIGNER PRINCIPLES ═══
 
 🎨 COLOR THEORY (60-30-10 Rule):
-- YOU choose the perfect color palette for this outfit
+- YOU choose the perfect color palette for this outfit using your own creativity
+- IMPORTANT: Be ADVENTUROUS with color choices — explore the FULL color spectrum
+- Avoid defaulting to safe combinations like blue-and-white, black-and-white, or beige-and-white every time
+- Consider unexpected color combinations that real fashion designers use
+- Think about ${new Date().getFullYear()} runway trends from Milan, Paris, New York Fashion Week
+- Include rich colors like burgundy, emerald, mustard, terracotta, sage, plum, rust, navy, camel, cognac when appropriate
+- Mix warm and cool tones intelligently
+- Each outfit should have its OWN unique color identity
 - Consider the occasion, season, and target audience
 - 60% dominant color (largest piece — usually bottom or main top)
 - 30% secondary color (supporting pieces)
