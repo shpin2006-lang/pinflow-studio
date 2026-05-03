@@ -1092,8 +1092,27 @@ CURRENCY: ${co.curr}
 YEAR: ${new Date().getFullYear()}
 ══════════════════════════════════════════════
 
-═══ STEP 1: ANALYZE THE REQUEST ═══
-Read the topic carefully. Decide:
+═══ STEP 1: ANALYZE THE REQUEST CAREFULLY ═══
+
+LOOK AT THE TOPIC: "${topic}"
+
+DECISION TREE:
+- Does the topic mention a NUMBER (like "10", "15", "5", "top", "best")? → It's a PRODUCT LIST request
+- Does the topic mention a SPECIFIC PRODUCT TYPE (like "linen shirts", "jeans", "sneakers", "dresses")? → It's a PRODUCT LIST request
+- Does the topic describe an OCCASION or VIBE (like "brunch outfit", "date night", "summer vibes")? → It's a COMPLETE OUTFIT request
+
+FOR PRODUCT LIST REQUESTS:
+- Give EXACTLY the number specified or 5-10 if no number given
+- ALL products should be the SAME TYPE mentioned in topic
+- Vary the products by: brand, color, fit, style, fabric, price
+- Show range and variety
+- Use real Amazon brands
+- Include color in product name
+- Skip the outfit structure rules below
+- Do NOT add tops/bottoms/shoes/bags — only what was asked for
+
+FOR COMPLETE OUTFIT REQUESTS ONLY:
+Continue to Step 2 below for full outfit styling rules
 - Is this a complete outfit request? → Build a full styled look
 - Is this a product list request (e.g. "10 sneakers")? → Curate variety with quality
 - What occasion/mood does this evoke?
