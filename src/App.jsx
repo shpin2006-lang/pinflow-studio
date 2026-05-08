@@ -1140,47 +1140,63 @@ CRITICAL FIT POINTS:
 
 → Tailoring is Magic: Always assume pieces will be tailored. A $50 blazer perfectly tailored beats a $500 blazer ill-fitting. Always.
 
-═════ PRINCIPLE 3: COLOR THEORY MASTERY ═════
+═════ PRINCIPLE 3: COLOR HARMONY (HOW COLORS ACTUALLY LOOK TOGETHER) ═════
 
-Color separates good outfits from extraordinary ones. Apply color thinking like a painter.
+Most outfits fail not because of bad clothes but because of color combinations that LOOK technically matching but feel visually off.
 
-THE 60-30-10 SACRED RULE:
-60% dominant color (largest pieces, usually base)
-30% secondary color (supporting items)  
-10% accent color (small details, accessories)
+CRITICAL HARMONY RULES:
 
-UNDERTONE HARMONY:
-Warm undertones flow together: camel, cream, gold, terracotta, mustard, olive, rust, ivory, peach, coral, brown, copper
-Cool undertones flow together: charcoal, navy, white, silver, dusty pink, sage, lavender, slate, grey
-Mixing warm and cool creates tension — only do it intentionally, like one warm accent in a cool palette.
+1. AVOID COLOR COMPETITION
+   When multiple warm tones compete with cool tones in equal amounts, the eye gets confused.
+   The combination looks "matching" but feels visually muddy.
+   Always pick a clear temperature lane — mostly warm or mostly cool.
 
-COLOR APPROACHES TO MASTER:
+2. PICK A TEMPERATURE LANE
+   Either go FULLY warm or FULLY cool. Mixing creates visual chaos.
+   
+   When mixing temperatures, use ONE warm accent in a cool palette OR ONE cool accent in warm — never equal mix of both.
 
-→ Tonal Dressing: Multiple shades of the same color. The most luxurious looking approach. Cream + ivory + ecru + taupe creates depth and sophistication without complexity.
+3. THE GROUNDING RULE
+   Every outfit needs ONE truly neutral grounding piece.
+   Without grounding, colors fight each other.
 
-→ Complementary: Two colors opposite on the color wheel. Sage green with dusty rose. Navy with rust. Terracotta with teal. Sophisticated and unexpected.
+4. THE TONAL APPROACH (MOST FOOLPROOF)
+   Wearing 2-3 shades of the SAME color family always looks expensive and intentional.
+   Different shades of one color creates depth without complexity.
 
-→ Analogous: Adjacent colors on the wheel. Burgundy + plum + dusty pink. Navy + slate + dove grey. Always harmonious.
+5. THE 70-20-10 SPLIT
+   For multi-color outfits:
+   - 70% main color (largest pieces in same family)
+   - 20% secondary (top OR shoes)
+   - 10% accent (bag OR jewelry)
+   Never split colors equally — one must dominate.
 
-→ Neutral Foundation: Build on neutrals (white, cream, beige, grey, black, navy) with one strategic color pop.
+6. DEAD COMBINATIONS TO AVOID
+   These look "matching" but actually fail:
+   - Mixing too many warm browns with one cool tone
+   - Black with brown together (looks accidental)
+   - Multiple medium-tones with no light or dark anchor
+   - Three different earth tones with no neutral grounding
+   - Equal amounts of warm and cool colors
+   - Brown shoes with black pants
 
-→ Color Drenching: Wearing one color head to toe in different textures and shades. Most fashion-forward approach.
+7. THE HARMONY TEST
+   Before finalizing, the outfit must pass these checks:
+   • Are most pieces from the same temperature family?
+   • Is there ONE truly anchoring neutral?
+   • Do any colors fight for attention?
+   • Could a viewer describe the color story in 3 words or fewer?
+   • Would removing one color make it look BETTER or WORSE?
+   • Does each color have a clear PURPOSE?
 
-CREATIVE COLOR FREEDOM:
-You have full creative freedom to choose colors. Avoid defaulting to safe combinations like:
-- Navy and white
-- Black and white
-- Beige and white
-- Denim and white tee
-Instead, push toward unexpected harmonies that real designers use:
-- Butter yellow with chocolate brown
-- Sage green with terracotta
-- Lavender with rust
-- Olive with dusty pink
-- Burgundy with cream
-- Forest green with butter
-- Plum with copper
-Be ADVENTUROUS while maintaining harmony.
+8. CHOOSE FREELY BUT WISELY
+   You have full creative freedom to choose ANY colors. Just ensure they:
+   • Belong to the same temperature family (mostly)
+   • Have one clear hero color
+   • Include a grounding neutral
+   • Pass the harmony test
+   • Tell a unified visual story
+   • Don't compete for attention
 
 ═════ PRINCIPLE 4: TEXTURE & FABRIC ═════
 
